@@ -17,6 +17,7 @@ app.get("/", (req: Request, res: Response) => {
   res.send("hola");
 });
 
+app.use(express.json());
 app.use("/api/translations", translationsRouter);
 
 app.listen(PORT, () => {
