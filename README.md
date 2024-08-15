@@ -2,7 +2,7 @@
 
 ### 1. Get Translations by Language
 
-**Endpoint:** `GET /translations/:language`
+**Endpoint:** `GET /api/translations/:language`
 
 **Description:** Retrieve all translations for a specific language.
 
@@ -17,7 +17,7 @@
 
 **Example Request:**
 
-`GET /translations/en`
+`GET /api/translations/en`
 
 **Example Response:**
 
@@ -42,7 +42,7 @@
 
 ### 2. Create a New Translation
 
-**Endpoint:** `POST /translations`
+**Endpoint:** `POST /api/translations`
 
 **Description:** Add a new translation to the database.
 
@@ -60,7 +60,7 @@
 **Example Request:**
 
 ```
-POST /translations
+POST /api/translations
 Content-Type: application/json
 {
 	"language": "en",
@@ -84,7 +84,7 @@ Content-Type: application/json
 
 ### 3. Update a Translation (Full Update)
 
-**Endpoint:** `PUT /translations/:id`
+**Endpoint:** `PUT /api/translations/:id`
 
 **Description:** Replace an existing translation with new data.
 
@@ -107,7 +107,7 @@ Content-Type: application/json
 **Example Request:**
 
 ```
-PUT /translations/64d5708df1b2a78a7e6f3e1d
+PUT /api/translations/64d5708df1b2a78a7e6f3e1d
 Content-Type: application/json
 {
 	"language": "en",
@@ -131,7 +131,7 @@ Content-Type: application/json
 
 ### 4. Update a Translation (Partial Update)
 
-**Endpoint:** `PATCH /translations/:id`
+**Endpoint:** `PATCH /api/translations/:id`
 
 **Description:** Update specific fields of an existing translation.
 
@@ -152,7 +152,7 @@ Content-Type: application/json
 **Example Request:**
 
 ```
-PATCH /translations/64d5708df1b2a78a7e6f3e1d
+PATCH /api/translations/64d5708df1b2a78a7e6f3e1d
 Content-Type: application/json
 { "text": "Welcome aboard!" }
 ```
@@ -172,7 +172,7 @@ Content-Type: application/json
 
 ### 5. Delete a Translation
 
-**Endpoint:** `DELETE /translations/:id`
+**Endpoint:** `DELETE /api/translations/:id`
 
 **Description:** Delete a translation by its ID.
 
@@ -188,7 +188,7 @@ Content-Type: application/json
 
 **Example Request:**
 
-`DELETE /translations/64d5708df1b2a78a7e6f3e1d`
+`DELETE /api/translations/64d5708df1b2a78a7e6f3e1d`
 
 **Example Response:**
 
