@@ -27,7 +27,10 @@ app.listen(PORT, "0.0.0.0", () => {
 });
 
 mongoose
-  .connect(DB_URL)
+  .connect(DB_URL, {
+    serverSelectionTimeoutMS: 30000, // Increase timeout to 30 seconds
+    socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+  })
   .then(() => console.log("Mongo connected!"))
   .catch((e) => console.error(e));
 
