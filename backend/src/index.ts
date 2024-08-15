@@ -9,8 +9,10 @@ import type { Request, Response } from "express";
 
 dotenv.config();
 const app = express();
-const PORT = process.env.PORT;
+const PORT = Number(process.env.PORT);
 const DB_URL = process.env.DB_URL;
+
+console.log({ DB_URL, PORT });
 
 if (!DB_URL) throw new Error("No DB url found!");
 app.get("/", (req: Request, res: Response) => {
@@ -20,7 +22,7 @@ app.get("/", (req: Request, res: Response) => {
 app.use(express.json());
 app.use("/api/translations", translationsRouter);
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port: ${PORT}`);
 });
 
