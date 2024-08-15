@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import cors from "cors";
 import { translationsRouter } from "./routes/translations.ts";
 
 import { MongoClient, ServerApiVersion } from "mongodb";
@@ -12,13 +13,12 @@ const app = express();
 const PORT = Number(process.env.PORT);
 const DB_URL = process.env.DB_URL;
 
-console.log({ DB_URL, PORT });
-
 if (!DB_URL) throw new Error("No DB url found!");
 app.get("/", (req: Request, res: Response) => {
   res.send("hola");
 });
 
+app.use(cors());
 app.use(express.json());
 app.use("/api/translations", translationsRouter);
 
