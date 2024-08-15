@@ -1,5 +1,5 @@
 import { Table } from "antd";
-import { getTranslations } from "../api";
+import { Language, getTranslations } from "../api";
 import { useEffect, useState } from "react";
 import { Actions } from "./Actions/Actions";
 
@@ -30,17 +30,24 @@ const columns = [
   },
 ];
 
-export const TranslationsTable = () => {
-  const [translations, setTranslations] = useState([]);
+export const TranslationsTable = ({
+  selectedLanguage,
+}: {
+  selectedLanguage: Language;
+}) => {
+  const [translations, setTranslations] = useState<Translation[]>([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchTranslations = async () =>
-      setTranslations(await getTranslations());
-    if (!translations.length && loading) {
+      setTranslations(await getTranslations(selectedLanguage));
+    if (
+      (!translations.length && loading) ||
+      (translations.length && translations[0].language !== selectedLanguage)
+    ) {
       fetchTranslations();
       setLoading(false);
     }
-  }, [translations]);
+  }, [translations, loading, selectedLanguage]);
 
   return <Table columns={columns} dataSource={translations} />;
 };

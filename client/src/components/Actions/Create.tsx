@@ -2,13 +2,13 @@ import { PlusCircleOutlined } from "@ant-design/icons";
 import { Button, Input, Modal, Select } from "antd";
 import { useState } from "react";
 import { languageOptions } from "../TranslationsTable";
-import { createTranslation } from "../../api";
+import { Language, createTranslation } from "../../api";
 
 export const Create = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [key, setKey] = useState("");
   const [text, setText] = useState("");
-  const [language, setLanguage] = useState<"en" | "es">("en");
+  const [language, setLanguage] = useState<Language>("en");
 
   return (
     <>
@@ -46,12 +46,12 @@ export const Create = () => {
           onChange={(e) => setText(e.target.value)}
         />
         <Select
-          value={languageOptions.find(({ value }) => value === language)?.label}
+          value={language}
           options={languageOptions}
           style={{ minWidth: "8rem", marginTop: "1rem" }}
           onSelect={(e) => {
-            if ((e: string): e is "es" | "en" => e === "es" || e === "en")
-              setLanguage(e as typeof language);
+            if ((e: string): e is Language => e === "es" || e === "en")
+              setLanguage(e);
           }}
         />
       </Modal>
