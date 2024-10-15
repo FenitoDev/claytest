@@ -16,9 +16,11 @@ import {
   InputLabel,
 } from "@mui/material";
 import { isLanguage } from "../../utils";
+import { useNotification } from "../NotificationContext";
 
 export const Create = () => {
   const queryClient = useQueryClient();
+  const { showNotification } = useNotification();
 
   const [modalOpen, setModalOpen] = useState(false);
   const [key, setKey] = useState("");
@@ -28,6 +30,13 @@ export const Create = () => {
     mutationFn: createTranslation,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["translations"] });
+      showNotification("Translation created successfully", "success");
+    },
+    onError: (error: any) => {
+      showNotification(
+        `Error while creating translation: ${error.message}`,
+        "error"
+      );
     },
   });
 

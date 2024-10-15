@@ -5,6 +5,7 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { NotificationProvider } from "./components/NotificationContext";
 
 const queryClient = new QueryClient();
 
@@ -31,7 +32,9 @@ root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>
-        <App />
+        <NotificationProvider>
+          <App />
+        </NotificationProvider>
       </ThemeProvider>
     </QueryClientProvider>
   </React.StrictMode>

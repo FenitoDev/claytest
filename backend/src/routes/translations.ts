@@ -24,7 +24,8 @@ translationsRouter.post("/", async (req, res) => {
     });
     res.status(201).json(newTranslation);
   } catch (error) {
-    res.status(400).json({ message: "Invalid data provided.", error });
+    if (error instanceof Error)
+      res.status(400).json({ message: error.message, error });
   }
 });
 
@@ -73,7 +74,7 @@ translationsRouter.delete("/:id", async (req, res) => {
     await prisma.translation.delete({
       where: { id },
     });
-    res.status(204).send();
+    return res.status(204).send();
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError)
       if (error.code === "P2025")

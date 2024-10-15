@@ -17,7 +17,8 @@ export const createTranslation = async (body: CreateTranslation) => {
     body: JSON.stringify(body),
   });
   if (!res.ok) {
-    throw new Error("Error creating translation");
+    const errorData = await res.json();
+    throw new Error(errorData.message || "Error creating translation");
   }
   return res.json();
 };
@@ -50,16 +51,15 @@ export const editTranslation = async (translation: Translation) => {
   return res.json();
 };
 
-export const deleteTranslation = async (id: String) => {
+export const deleteTranslation = async (id: string) => {
   const res = await fetch(API_URL + "/api/translations/" + id, {
     method: "DELETE",
     headers: {
       "content-type": "application/json",
-      "Access-Control-Allow-Origin": "no-cors",
     },
   });
   if (!res.ok) {
-    throw new Error("Error deleting translation");
+    throw new Error("Network response was not ok");
   }
-  return res.json();
+  return res.text();
 };
