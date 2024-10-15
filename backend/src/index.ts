@@ -1,10 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
-import mongoose from "mongoose";
 import cors from "cors";
 import { translationsRouter } from "./routes/translations.ts";
-
-import { MongoClient, ServerApiVersion } from "mongodb";
+import prisma from "./prisma.ts";
 
 import type { Request, Response } from "express";
 
@@ -26,31 +24,7 @@ app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port: ${PORT}`);
 });
 
-mongoose
-  .connect(DB_URL, {
-    serverSelectionTimeoutMS: 30000, // Increase timeout to 30 seconds
-    socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
-  })
-  .then(() => console.log("Mongo connected!"))
-  .catch((e) => console.error(e));
-
-const client = new MongoClient(DB_URL, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  },
+process.on("SIGINT", async () => {
+  await prisma.$disconnect();
+  process.exit();
 });
-
-const run = async () => {
-  try {
-    await client.connect();
-    await client.db("admin").command({ ping: 1 });
-    console.log("Successfully connected to MongoDB!");
-  } catch (error) {
-    console.error(error);
-  } finally {
-    await client.close();
-  }
-};
-run().catch(console.dir);

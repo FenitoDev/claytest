@@ -5,33 +5,39 @@ import {
   TranslationsTable,
   languageOptions,
 } from "./components/TranslationsTable";
-import { Select } from "antd";
 import { Language } from "./api";
+import { Select, MenuItem, Typography, Container, Box } from "@mui/material";
+import { isLanguage } from "./utils";
 
 function App() {
   const [language, setLanguage] = useState<Language>("en");
+
   return (
-    <>
-      <div className="App">
-        <header className="App-header">
-          <p>Welcome to Clay's internationalization management system</p>
-        </header>
-      </div>
-      <body>
-        <div>
-          <Create />
-          <Select
-            options={languageOptions}
-            value={language}
-            onSelect={(e) => {
-              if ((e: string): e is "es" | "en" => e === "es" || e === "en")
-                setLanguage(e);
-            }}
-          />
-        </div>
-        <TranslationsTable selectedLanguage={language} />
-      </body>
-    </>
+    <Container>
+      <Box sx={{ textAlign: "center", my: 4 }}>
+        <Typography>
+          Welcome to GetAgil's internationalization management system
+        </Typography>
+      </Box>
+      <Box>
+        <Create />
+        <Select
+          value={language}
+          onChange={({ target: { value } }) => {
+            if (isLanguage(value)) setLanguage(value);
+          }}
+          displayEmpty
+          sx={{ minWidth: 120, ml: 2 }}
+        >
+          {languageOptions.map(({ value, label }) => (
+            <MenuItem key={value} value={value}>
+              {label}
+            </MenuItem>
+          ))}
+        </Select>
+      </Box>
+      <TranslationsTable selectedLanguage={language} />
+    </Container>
   );
 }
 

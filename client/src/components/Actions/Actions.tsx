@@ -4,9 +4,9 @@ import { Edit } from "./Edit";
 
 export const Actions = ({ translation }: { translation: Translation }) => {
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "auto auto" }}>
+    <div style={{ display: "flex", gap: "0.5rem" }}>
       <Edit translation={translation} />
-      <Delete id={translation._id} />
+      <Delete id={translation.id} />
     </div>
   );
 };

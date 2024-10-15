@@ -8,64 +8,58 @@ type CreateTranslation = { language: Language; key: String; text: String };
 if (!API_URL) throw new Error("API URL not found");
 
 export const createTranslation = async (body: CreateTranslation) => {
-  try {
-    const res = await fetch(API_URL + "/api/translations/", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "Access-Control-Allow-Origin": "no-cors",
-      },
-      body: JSON.stringify(body),
-    });
-    const response = await res.json();
-    return response;
-  } catch (error) {
-    console.error(error);
+  const res = await fetch(API_URL + "/api/translations/", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "Access-Control-Allow-Origin": "no-cors",
+    },
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    throw new Error("Error creating translation");
   }
+  return res.json();
 };
 
 export const getTranslations = async (lang: Language = "en") => {
-  try {
-    const res = await fetch(API_URL + "/api/translations/" + lang, {
-      method: "GET",
-      headers: {
-        "content-type": "application/json",
-        "Access-Control-Allow-Origin": "no-cors",
-      },
-    });
-    const response = await res.json();
-    return response;
-  } catch (error) {
-    console.error(error);
+  const res = await fetch(API_URL + "/api/translations/" + lang, {
+    method: "GET",
+    headers: {
+      "content-type": "application/json",
+      "Access-Control-Allow-Origin": "no-cors",
+    },
+  });
+  if (!res.ok) {
+    throw new Error("Error fetching translations");
   }
+  return res.json();
 };
 export const editTranslation = async (translation: Translation) => {
-  try {
-    const res = await fetch(API_URL + "/api/translations/" + translation._id, {
-      method: "PATCH",
-      headers: {
-        "content-type": "application/json",
-        "Access-Control-Allow-Origin": "no-cors",
-      },
-      body: JSON.stringify(translation),
-    });
-    const response = await res.json();
-    return response;
-  } catch (error) {
-    console.error(error);
+  const res = await fetch(API_URL + "/api/translations/" + translation.id, {
+    method: "PATCH",
+    headers: {
+      "content-type": "application/json",
+      "Access-Control-Allow-Origin": "no-cors",
+    },
+    body: JSON.stringify(translation),
+  });
+  if (!res.ok) {
+    throw new Error("Error editing translation");
   }
+  return res.json();
 };
 
 export const deleteTranslation = async (id: String) => {
-  try {
-    const res = await fetch(API_URL + "/api/translations/" + id, {
-      method: "DELETE",
-      headers: {
-        "content-type": "application/json",
-        "Access-Control-Allow-Origin": "no-cors",
-      },
-    });
-  } catch (error) {
-    console.error(error);
+  const res = await fetch(API_URL + "/api/translations/" + id, {
+    method: "DELETE",
+    headers: {
+      "content-type": "application/json",
+      "Access-Control-Allow-Origin": "no-cors",
+    },
+  });
+  if (!res.ok) {
+    throw new Error("Error deleting translation");
   }
+  return res.json();
 };

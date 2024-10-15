@@ -1,53 +1,74 @@
-import { Table } from "antd";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  CircularProgress,
+} from "@mui/material";
 import { Language, getTranslations } from "../api";
-import { useEffect, useState } from "react";
 import { Actions } from "./Actions/Actions";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 export type Translation = {
   key: string;
-  language: string;
+  language: Language;
   text: string;
-  _id: string;
+  id: string;
 };
 
 export const languageOptions = [
-  { label: "English", value: "en" },
-  { label: "Español", value: "es" },
+  { label: "English", value: "en" as const },
+  { label: "Español", value: "es" as const },
 ];
 
-const columns = [
-  { title: "Key", dataIndex: "key", key: "key" },
-  { title: "Translation", dataIndex: "text", key: "text" },
-  { title: "Language", dataIndex: "language", key: "language", width: "4rem" },
-  {
-    title: "Actions",
-    dataIndex: "actions",
-    key: "id",
-    width: "4rem",
-    render: (_: undefined, translation: Translation) => (
-      <Actions translation={translation} />
-    ),
-  },
-];
+const columns = ["Key", "Translation", "Language", "Actions"];
 
 export const TranslationsTable = ({
   selectedLanguage,
 }: {
   selectedLanguage: Language;
 }) => {
-  const [translations, setTranslations] = useState<Translation[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
+  const { data: translations, isLoading } = useQuery<Translation[], Error>({
+    queryKey: ["translations"],
+    queryFn: () => getTranslations(selectedLanguage),
+  });
   useEffect(() => {
-    const fetchTranslations = async () =>
-      setTranslations(await getTranslations(selectedLanguage));
-    if (
-      (!translations.length && loading) ||
-      (translations.length && translations[0].language !== selectedLanguage)
-    ) {
-      fetchTranslations();
-      setLoading(false);
-    }
-  }, [translations, loading, selectedLanguage]);
-
-  return <Table columns={columns} dataSource={translations} />;
+    queryClient.invalidateQueries({
+      queryKey: ["translations"],
+    });
+  }, [selectedLanguage, queryClient]);
+  return (
+    <TableContainer component={Paper}>
+      {isLoading ? (
+        <CircularProgress sx={{ m: 2 }} />
+      ) : (
+        <Table>
+          <TableHead>
+            <TableRow>
+              {columns.map((column) => (
+                <TableCell key={column}>{column}</TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {translations?.map((translation) => (
+              <TableRow key={translation.id}>
+                <TableCell>{translation.key}</TableCell>
+                <TableCell>{translation.text}</TableCell>
+                <TableCell>{translation.language.toUpperCase()}</TableCell>
+                <TableCell>
+                  <Actions translation={translation} />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
+    </TableContainer>
+  );
 };

@@ -1,60 +1,109 @@
-import { PlusCircleOutlined } from "@ant-design/icons";
-import { Button, Input, Modal, Select } from "antd";
 import { useState } from "react";
 import { languageOptions } from "../TranslationsTable";
 import { Language, createTranslation } from "../../api";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import {
+  Button,
+  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+} from "@mui/material";
+import { isLanguage } from "../../utils";
 
 export const Create = () => {
+  const queryClient = useQueryClient();
+
   const [modalOpen, setModalOpen] = useState(false);
   const [key, setKey] = useState("");
   const [text, setText] = useState("");
   const [language, setLanguage] = useState<Language>("en");
+  const createMutation = useMutation({
+    mutationFn: createTranslation,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["translations"] });
+    },
+  });
+
+  const handleSubmit = () => {
+    createMutation.mutateAsync({ key, text, language });
+    handleClose();
+  };
+
+  const handleClose = () => {
+    setModalOpen(false);
+    setKey("");
+    setText("");
+    setLanguage("en");
+  };
 
   return (
     <>
       <Button
         onClick={() => setModalOpen(true)}
-        style={{ margin: "1rem" }}
-        icon={<PlusCircleOutlined />}
+        variant="contained"
+        color="primary"
+        startIcon={<AddCircleOutlineIcon />}
+        sx={{ margin: "1rem" }}
       >
         Create new translation
       </Button>
-
-      <Modal
-        open={modalOpen}
-        title="Create translation"
-        closable={false}
-        onCancel={() => setModalOpen(false)}
-        onOk={() => {
-          createTranslation({ key, text, language });
-          setModalOpen(false);
-          setKey("");
-          setText("");
-        }}
-        okButtonProps={{ disabled: !key || !text || !language }}
-      >
-        <Input
-          placeholder="Key"
-          value={key}
-          onChange={(e) => setKey(e.target.value)}
-          style={{ marginTop: "1rem" }}
-        />
-        <Input
-          placeholder="Translation"
-          value={text}
-          style={{ marginTop: "1rem" }}
-          onChange={(e) => setText(e.target.value)}
-        />
-        <Select
-          value={language}
-          options={languageOptions}
-          style={{ minWidth: "8rem", marginTop: "1rem" }}
-          onSelect={(e) => {
-            if ((e: string): e is Language => e === "es" || e === "en")
-              setLanguage(e);
-          }}
-        />
-      </Modal>
+      <Dialog open={modalOpen} onClose={handleClose}>
+        <DialogTitle>Create Translation</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Key"
+            type="text"
+            fullWidth
+            value={key}
+            onChange={(e) => setKey(e.target.value)}
+          />
+          <TextField
+            margin="dense"
+            label="Translation"
+            type="text"
+            fullWidth
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+          />
+          <FormControl fullWidth margin="dense">
+            <InputLabel id="language-select-label">Language</InputLabel>
+            <Select
+              labelId="language-select-label"
+              value={language}
+              label="Language"
+              onChange={({ target: { value } }) => {
+                if (isLanguage(value)) setLanguage(value);
+              }}
+            >
+              {languageOptions.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button
+            onClick={handleSubmit}
+            disabled={!key || !text || !language}
+            variant="contained"
+            color="primary"
+          >
+            Create
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

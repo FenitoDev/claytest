@@ -1,4 +1,4 @@
-# Clay internationalization api documentation
+# GetAgil internationalization api documentation
 
 ### 1. Get Translations by Language
 

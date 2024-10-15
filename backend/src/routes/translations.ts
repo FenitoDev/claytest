@@ -1,33 +1,47 @@
 import express from "express";
-import { Translation } from "../models/translation.ts";
+import prisma from "../prisma.ts";
+import { Prisma } from "@prisma/client";
 
 export const translationsRouter = express.Router();
 
 translationsRouter.get("/:language", async (req, res) => {
   const { language } = req.params;
-  const translations = await Translation.find({ language });
-  res.json(translations);
+  try {
+    const translations = await prisma.translation.findMany({
+      where: { language },
+    });
+    res.status(200).json(translations);
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving translations", error });
+  }
 });
 
 translationsRouter.post("/", async (req, res) => {
-  const newTranslation = new Translation(req.body);
-  await newTranslation.save();
-  res.status(201).json(newTranslation);
+  const { language, key, text } = req.body;
+  try {
+    const newTranslation = await prisma.translation.create({
+      data: { language, key, text },
+    });
+    res.status(201).json(newTranslation);
+  } catch (error) {
+    res.status(400).json({ message: "Invalid data provided.", error });
+  }
 });
 
 translationsRouter.put("/:id", async (req, res) => {
   const { id } = req.params;
-  const updatedData = req.body;
+  const { language, key, text } = req.body;
   try {
-    const updatedTranslation = await Translation.findByIdAndUpdate(
-      id,
-      updatedData,
-      { new: true }
-    );
-    if (!updatedTranslation)
-      return res.status(404).json({ message: "Translation not found" });
-    res.json(updatedTranslation);
+    const updatedTranslation = await prisma.translation.update({
+      where: { id },
+      data: { language, key, text },
+    });
+    res.status(200).json(updatedTranslation);
   } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError)
+      if (error.code === "P2025")
+        return res.status(404).json({ message: "Translation not found" });
+
     res.status(500).json({ message: "Error updating translation", error });
   }
 });
@@ -37,19 +51,18 @@ translationsRouter.patch("/:id", async (req, res) => {
   const updateData = req.body;
 
   try {
-    const updatedTranslation = await Translation.findByIdAndUpdate(
-      id,
-      { $set: updateData },
-      { new: true }
-    );
+    const updatedTranslation = await prisma.translation.update({
+      where: { id },
+      data: updateData,
+    });
 
-    if (!updatedTranslation) {
-      return res.status(404).json({ message: "Translation not found" });
-    }
+    res.status(200).json(updatedTranslation);
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError)
+      if (error.code === "P2025")
+        return res.status(404).json({ message: "Translation not found" });
 
-    res.json(updatedTranslation);
-  } catch (err) {
-    res.status(500).json({ message: "Error updating translation", error: err });
+    res.status(500).json({ message: "Error updating translation", error });
   }
 });
 
@@ -57,12 +70,15 @@ translationsRouter.delete("/:id", async (req, res) => {
   const { id } = req.params;
 
   try {
-    const deletedTranslation = await Translation.findByIdAndDelete(id);
-    if (!deletedTranslation) {
-      return res.status(404).json({ message: "Translation not found" });
-    }
-    res.status(204).json({ message: "Translation deleted" });
+    await prisma.translation.delete({
+      where: { id },
+    });
+    res.status(204).send();
   } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError)
+      if (error.code === "P2025")
+        return res.status(404).json({ message: "Translation not found" });
+
     res.status(500).json({ message: "Error deleting translation", error });
   }
 });
