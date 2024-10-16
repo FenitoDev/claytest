@@ -2,7 +2,7 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { TranslationsTable } from "../components/TranslationsTable";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NotificationProvider } from "../components/NotificationContext";
-import { Create } from "../components/Actions/Create";
+import App from "../App";
 
 const queryClient = new QueryClient();
 
@@ -67,8 +67,7 @@ describe("TranslationsTable", () => {
     render(
       <QueryClientProvider client={queryClient}>
         <NotificationProvider>
-          <Create />
-          <TranslationsTable selectedLanguage="en" />
+          <App />
         </NotificationProvider>
       </QueryClientProvider>
     );
