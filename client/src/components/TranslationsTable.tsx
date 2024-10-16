@@ -33,10 +33,12 @@ export const TranslationsTable = ({
   selectedLanguage: Language;
 }) => {
   const queryClient = useQueryClient();
-  const { data: translations, isLoading } = useQuery<Translation[], Error>({
-    queryKey: ["translations"],
-    queryFn: () => getTranslations(selectedLanguage),
-  });
+  const { data: translations = [], isLoading } = useQuery<Translation[], Error>(
+    {
+      queryKey: ["translations"],
+      queryFn: () => getTranslations(selectedLanguage),
+    }
+  );
   useEffect(() => {
     queryClient.invalidateQueries({
       queryKey: ["translations"],

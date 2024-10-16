@@ -9,7 +9,7 @@
     "moduleResolution": "Node",
     "outDir": "./dist",
     "rootDir": "./src",
-    "types": ["node"],
+    "types": ["node", "jest"],
     "allowImportingTsExtensions": true,
     "noEmit": true
   },
