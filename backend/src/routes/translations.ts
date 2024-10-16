@@ -1,5 +1,5 @@
 import express from "express";
-import prisma from "../prisma.ts";
+import prisma from "../prisma";
 import { Prisma } from "@prisma/client";
 
 export const translationsRouter = express.Router();

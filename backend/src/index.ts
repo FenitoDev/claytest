@@ -1,8 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import { translationsRouter } from "./routes/translations.ts";
-import prisma from "./prisma.ts";
+import { translationsRouter } from "./routes/translations";
+import prisma from "./prisma";
 
 import type { Request, Response } from "express";
 
