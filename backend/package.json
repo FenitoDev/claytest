@@ -9,7 +9,7 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "build": "tsc",
-    "apprunner": "npm install && tsc && npm run start"
+    "apprunner": "npm install && tsc && npx prisma generate && npm run start"
   },
   "engines": {
     "node": ">=18.0.0"
