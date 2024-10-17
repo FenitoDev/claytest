@@ -7,3 +7,5 @@ This app was built with React, Typescript, prisma ORM and material UI. It also u
 The database is hosted in AWS RDS.
 The backend is deployed in AWS app runner.
 The frontend is deployed in AWS amplify.
+
+You can check out the web app here: https://main.d1fusny30630ai.amplifyapp.com/
